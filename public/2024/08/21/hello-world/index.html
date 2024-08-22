@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="ShiYi Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="/img/post-bg-coffee.jpg">
+    <meta property="twitter:image" content="/img/post-bg-coffee.jpg" />
+    
+
+    
+    <meta name="title" content="go实现SSH访问远程机器" />
+    <meta property="og:title" content="go实现SSH访问远程机器" />
+    <meta property="twitter:title" content="go实现SSH访问远程机器" />
+    
+
+    
+    <meta name="description" content="时宜，程序员, 开源爱好者，生活探险家 | 这里是 时宜 的博客，与你一起发现更大的世界。">
+    <meta property="og:description" content="时宜，程序员, 开源爱好者，生活探险家 | 这里是 时宜 的博客，与你一起发现更大的世界。" />
+    <meta property="twitter:description" content="时宜，程序员, 开源爱好者，生活探险家 | 这里是 时宜 的博客，与你一起发现更大的世界。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="时宜, Zhaoshiyi, Zhaoshiyi, , 时宜的网络日志, 时宜的博客, Zhaoshiyi Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>go实现SSH访问远程机器 | 编程汪的博客 | Zhaoshiyi Blog</title>
+
+    <link rel="canonical" href="/2024/08/21/hello-world/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShiYi Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                    
+                    
+		    
+                        <li><a href="/archive//">ARCHIVE</a></li>
+                    
+                        <li><a href="/notes//">NOTES</a></li>
+                    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/post-bg-coffee.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                    </div>
+                    <h1>go实现SSH访问远程机器</h1>
+                    <h2 class="subheading">go如何实现ssh远程登录详解</h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                赵时宜
+                             
+                            on 
+                            Wednesday, August 21, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="摘要">摘要</h3>
+<p>SSH全称叫 Secure Shell（安全外壳协议，简称SSH），其实是一种加密的网络传输协议，能够在不安全的网络中为计算机之间的网络服务提供安全的传输环境。</p>
+<p>SSH最常见的用途是在本地远程登录服务器，或者远程使用命令行界面执行远程命令。</p>
+<h3 id="ssh登录">ssh登录</h3>
+<p>ssh 登录的两种方式</p>
+<ol>
+<li>
+<p>密码登录
+（1）远程主机收到用户的登录请求，把自己的公钥发给用户。
+（2）用户使用这个公钥，将登录密码加密后，发送回来。
+（3）远程主机用自己的私钥，解密登录密码，如果密码正确，就同意用户登录。</p>
+</li>
+<li>
+<p>公钥登录</p>
+<p>使用密码登录，每次都必须输入密码，非常麻烦。好在SSH还提供了公钥登录，可以省去输入密码的步骤。</p>
+<p>所谓&quot;公钥登录&quot;，原理很简单，就是用户将自己的公钥储存在远程主机上。登录的时候，远程主机会向用户发送一段随机字符串，用户用自己的私钥加密后，再发回来。远程主机用事先储存的公钥进行解密，如果成功，就证明用户是可信的，直接允许登录shell，不再要求密码。</p>
+</li>
+<li>
+<p>公钥登录准备工作：</p>
+<ol>
+<li>
+<p>用户生成密钥 默认存放在路径下$HOME/.ssh, 会新生成两个文件id_rsa.pub和id_rsa, 也就是公钥和私钥。</p>
+<p><code>ssh-keygen</code></p>
+</li>
+<li>
+<p>以下命令将公钥发送至远程主机host</p>
+<p>ssh-copy-id 会将刚创建的公钥内容追加写入至远程机器 的$HOME/.ssh/authorized_keys 文件内,等同于命令
+<code>ssh user@host 'mkdir -p .ssh &amp;&amp; cat &gt;&gt; .ssh/authorized_keys' &lt; ~/.ssh/id_rsa.pub</code></p>
+<p><code>ssh-copy-id user@host</code></p>
+</li>
+<li>
+<p>设置远程主机允许公钥登录，打开</p>
+<p>/etc/ssh/sshd_config这个文件，将以下几行注释掉，去掉#注释符号</p>
+<p><code>　RSAAuthentication yes PubkeyAuthentication yes AuthorizedKeysFile .ssh/authorized_keys</code></p>
+</li>
+<li>
+<p>命令行公钥登录验证, ssh登录远程host成功</p>
+<p><code>ssh user@host</code></p>
+</li>
+<li>
+<p>golang 通过ssh公钥访问远程server, 并执行命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> SSH <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>	IP      <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>	User    <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>	Cert    <span style="color:#8be9fd">string</span> <span style="color:#6272a4">//key file path
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	Port    <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	session <span style="color:#ff79c6">*</span>ssh.Session
+</span></span><span style="display:flex;"><span>	client  <span style="color:#ff79c6">*</span>ssh.Client
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (S <span style="color:#ff79c6">*</span>SSH) <span style="color:#50fa7b">readPublicKeyFile</span>(file <span style="color:#8be9fd">string</span>) ssh.AuthMethod {
+</span></span><span style="display:flex;"><span>	buffer, err <span style="color:#ff79c6">:=</span> os.<span style="color:#50fa7b">ReadFile</span>(file)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	key, err <span style="color:#ff79c6">:=</span> ssh.<span style="color:#50fa7b">ParsePrivateKey</span>(buffer)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> ssh.<span style="color:#50fa7b">PublicKeys</span>(key)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Connect the SSH Server
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> (S <span style="color:#ff79c6">*</span>SSH) <span style="color:#50fa7b">Connect</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">var</span> sshConfig <span style="color:#ff79c6">*</span>ssh.ClientConfig
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">var</span> auth = []ssh.AuthMethod{
+</span></span><span style="display:flex;"><span>		S.<span style="color:#50fa7b">readPublicKeyFile</span>(S.Cert),
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	sshConfig = <span style="color:#ff79c6">&amp;</span>ssh.ClientConfig{
+</span></span><span style="display:flex;"><span>		User: S.User,
+</span></span><span style="display:flex;"><span>		Auth: auth,
+</span></span><span style="display:flex;"><span>		HostKeyCallback: <span style="color:#8be9fd;font-style:italic">func</span>(hostname <span style="color:#8be9fd">string</span>, remote net.Addr, key ssh.PublicKey) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		Timeout: time.Second <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">3</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	client, err <span style="color:#ff79c6">:=</span> ssh.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, fmt.<span style="color:#50fa7b">Sprintf</span>(<span style="color:#f1fa8c">&#34;%s:%d&#34;</span>, S.IP, S.Port), sshConfig)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	session, err <span style="color:#ff79c6">:=</span> client.<span style="color:#50fa7b">NewSession</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>		client.<span style="color:#50fa7b">Close</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	S.session = session
+</span></span><span style="display:flex;"><span>	S.client = client
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (S <span style="color:#ff79c6">*</span>SSH) <span style="color:#50fa7b">Close</span>() {
+</span></span><span style="display:flex;"><span>	S.session.<span style="color:#50fa7b">Close</span>()
+</span></span><span style="display:flex;"><span>	S.client.<span style="color:#50fa7b">Close</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// RunCmd to SSH Server
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> (S <span style="color:#ff79c6">*</span>SSH) <span style="color:#50fa7b">RunCmd</span>(cmd <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>	out, err <span style="color:#ff79c6">:=</span> S.session.<span style="color:#50fa7b">CombinedOutput</span>(cmd)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#8be9fd;font-style:italic">string</span>(out))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">TestSSH</span>(t <span style="color:#ff79c6">*</span>testing.T) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	client <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>SSH{
+</span></span><span style="display:flex;"><span>		IP:   <span style="color:#f1fa8c">&#34;ip&#34;</span>,
+</span></span><span style="display:flex;"><span>		User: <span style="color:#f1fa8c">&#34;jenkins&#34;</span>,
+</span></span><span style="display:flex;"><span>		Port: <span style="color:#bd93f9">22</span>,
+</span></span><span style="display:flex;"><span>		Cert: <span style="color:#f1fa8c">&#34;/Users/mrzhao/.ssh/id_rsa&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	client.<span style="color:#50fa7b">Connect</span>() 
+</span></span><span style="display:flex;"><span>	client.<span style="color:#50fa7b">RunCmd</span>(<span style="color:#f1fa8c">&#34;ls -al&#34;</span>)
+</span></span><span style="display:flex;"><span>	client.<span style="color:#50fa7b">Close</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ol>
+</li>
+</ol>
+<h3 id="go语言实现">go语言实现</h3>
+<p>go语言实现通过跳板机创建ssh连接访问VM, 前置条件可参照上述说明在跳板机和VM中配置访问机器的ssh公钥</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">ConnectVMThroughBastion</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	bastionHost <span style="color:#ff79c6">:=</span> <span style="color:#f1fa8c">&#34;bastionIP:22&#34;</span>
+</span></span><span style="display:flex;"><span>	bastionUser <span style="color:#ff79c6">:=</span> <span style="color:#f1fa8c">&#34;bastionUser&#34;</span>
+</span></span><span style="display:flex;"><span>	cert <span style="color:#ff79c6">:=</span> <span style="color:#f1fa8c">&#34;/Users/mrzhao/.ssh/id_rsa&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	vmHost <span style="color:#ff79c6">:=</span> <span style="color:#f1fa8c">&#34;vmip:22&#34;</span>
+</span></span><span style="display:flex;"><span>	vmUser <span style="color:#ff79c6">:=</span> <span style="color:#f1fa8c">&#34;vmUser&#34;</span>
+</span></span><span style="display:flex;"><span>	vmCert <span style="color:#ff79c6">:=</span> <span style="color:#f1fa8c">&#34;/Users/mrzhao/.ssh/id_rsa&#34;</span>
+</span></span><span style="display:flex;"><span>	sshConfig <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>ssh.ClientConfig{
+</span></span><span style="display:flex;"><span>		User: bastionUser,
+</span></span><span style="display:flex;"><span>		Auth: []ssh.AuthMethod{
+</span></span><span style="display:flex;"><span>			<span style="color:#50fa7b">readPublicKeyFile</span>(cert),
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		HostKeyCallback: <span style="color:#8be9fd;font-style:italic">func</span>(hostname <span style="color:#8be9fd">string</span>, remote net.Addr, key ssh.PublicKey) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		Timeout: time.Second <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">3</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	vmSshConfig <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>ssh.ClientConfig{
+</span></span><span style="display:flex;"><span>		User: vmUser,
+</span></span><span style="display:flex;"><span>		Auth: []ssh.AuthMethod{
+</span></span><span style="display:flex;"><span>			<span style="color:#50fa7b">readPublicKeyFile</span>(vmCert),
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		HostKeyCallback: <span style="color:#8be9fd;font-style:italic">func</span>(hostname <span style="color:#8be9fd">string</span>, remote net.Addr, key ssh.PublicKey) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		Timeout: time.Second <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">3</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">//connect to he bastion host
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	client, err <span style="color:#ff79c6">:=</span> ssh.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, bastionHost, sshConfig)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> client.<span style="color:#50fa7b">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// Dial a connection to the service host, from the bastion
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	conn, err <span style="color:#ff79c6">:=</span> client.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, vmHost)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">//establishes an authenticated SSH connection
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	authConn, chans, reqs, err <span style="color:#ff79c6">:=</span> ssh.<span style="color:#50fa7b">NewClientConn</span>(conn, vmHost, vmSshConfig)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">//NewClient creates a Client on top of the given connection.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">//vmClient is an ssh client connected to the service host, through the bastion host.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	vmClient <span style="color:#ff79c6">:=</span> ssh.<span style="color:#50fa7b">NewClient</span>(authConn, chans, reqs)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> vmClient.<span style="color:#50fa7b">Close</span>()
+</span></span><span style="display:flex;"><span>	session, err <span style="color:#ff79c6">:=</span> vmClient.<span style="color:#50fa7b">NewSession</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> session.<span style="color:#50fa7b">Close</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">//execute cmd
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	out, err <span style="color:#ff79c6">:=</span> session.<span style="color:#50fa7b">CombinedOutput</span>(<span style="color:#f1fa8c">&#34;ls -al&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#8be9fd;font-style:italic">string</span>(out))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://Zhaoshiyi.com"><img src="/img/favicon.png" />ShiYi Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/readme/" data-toggle="tooltip" data-placement="top" title="Clean White Theme for Hugo">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+<script src="https://giscus.app/client.js"
+        data-repo="shunsongshiyi/shunsongshiyi"
+        data-repo-id="shunsongshiyi/shunsongshiyi"
+        data-category="your category"
+        data-category-id="mrzhaocomments"
+        data-mapping="pathname"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-theme="light"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:ishunsongshiyi@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="ShiYi Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; ShiYi Blog 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
