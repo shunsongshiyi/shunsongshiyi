@@ -2,30 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://Zhaoshiyi.com/2024/08/21/hello-world/</loc>
+    <loc>https://shunsongshiyi.github.io/2024/08/21/ssh-go/</loc>
     <lastmod>2024-08-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://Zhaoshiyi.com/post/</loc>
+    <loc>https://shunsongshiyi.github.io/post/</loc>
     <lastmod>2024-08-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://Zhaoshiyi.com/</loc>
+    <loc>https://shunsongshiyi.github.io/</loc>
     <lastmod>2024-08-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://Zhaoshiyi.com/post/readme/</loc>
-    <lastmod>2019-01-09T00:00:00+00:00</lastmod>
+    <loc>https://shunsongshiyi.github.io/about/</loc>
   </url><url>
-    <loc>https://Zhaoshiyi.com/about/</loc>
+    <loc>https://shunsongshiyi.github.io/notes/</loc>
   </url><url>
-    <loc>https://Zhaoshiyi.com/notes/</loc>
+    <loc>https://shunsongshiyi.github.io/search/placeholder/</loc>
   </url><url>
-    <loc>https://Zhaoshiyi.com/search/placeholder/</loc>
+    <loc>https://shunsongshiyi.github.io/categories/</loc>
   </url><url>
-    <loc>https://Zhaoshiyi.com/categories/</loc>
+    <loc>https://shunsongshiyi.github.io/archive/</loc>
   </url><url>
-    <loc>https://Zhaoshiyi.com/archive/</loc>
+    <loc>https://shunsongshiyi.github.io/search/</loc>
   </url><url>
-    <loc>https://Zhaoshiyi.com/search/</loc>
-  </url><url>
-    <loc>https://Zhaoshiyi.com/tags/</loc>
+    <loc>https://shunsongshiyi.github.io/tags/</loc>
   </url>
 </urlset>

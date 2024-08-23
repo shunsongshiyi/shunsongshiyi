@@ -2,35 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ShiYi Blog</title>
-    <link>https://Zhaoshiyi.com/</link>
+    <link>https://shunsongshiyi.github.io/</link>
     <description>Recent content on ShiYi Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://Zhaoshiyi.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 21 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://shunsongshiyi.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>go实现SSH访问远程机器</title>
-      <link>https://Zhaoshiyi.com/2024/08/21/hello-world/</link>
+      <link>https://shunsongshiyi.github.io/2024/08/21/ssh-go/</link>
       <pubDate>Wed, 21 Aug 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://Zhaoshiyi.com/2024/08/21/hello-world/</guid>
+      <guid>https://shunsongshiyi.github.io/2024/08/21/ssh-go/</guid>
       <description>摘要 SSH全称叫 Secure Shell（安全外壳协议，简称SSH），其实是一种加密的网络传输协议，能够在不安全的网络中为计算机之间的网络服务提供安全的</description>
     </item>
     
     <item>
-      <title>Clean White Theme for Hugo</title>
-      <link>https://Zhaoshiyi.com/post/readme/</link>
-      <pubDate>Wed, 09 Jan 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://Zhaoshiyi.com/post/readme/</guid>
-      <description>Clean White Theme for Hugo CleanWhite is a clean, elegant, but fully functional blog theme for Hugo. Here is a live demo site using this theme. It is based on huxblog Jekyll Theme and Clean Blog Jekyll Theme. These two upstream projects have done awesome jobs to create a blog theme, what I&amp;rsquo;m doing here is porting it to Hugo, of which I like the simplicity and the much faster</description>
-    </item>
-    
-    <item>
       <title></title>
-      <link>https://Zhaoshiyi.com/about/</link>
+      <link>https://shunsongshiyi.github.io/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://Zhaoshiyi.com/about/</guid>
+      <guid>https://shunsongshiyi.github.io/about/</guid>
       <description>About Me Shiyi Zhao is a software developer.
 Currently, Shiyi works as a senior engineer at Naver Cloud
 While she is free,she likes writing technical blog posts, watching movies, hiking, travelling and learning languages.
@@ -39,28 +30,28 @@ Feel free to connect Huabing at Github and Linkedin, leave your thoughts in her 
     
     <item>
       <title></title>
-      <link>https://Zhaoshiyi.com/notes/</link>
+      <link>https://shunsongshiyi.github.io/notes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://Zhaoshiyi.com/notes/</guid>
+      <guid>https://shunsongshiyi.github.io/notes/</guid>
       <description></description>
     </item>
     
     <item>
       <title></title>
-      <link>https://Zhaoshiyi.com/search/placeholder/</link>
+      <link>https://shunsongshiyi.github.io/search/placeholder/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://Zhaoshiyi.com/search/placeholder/</guid>
+      <guid>https://shunsongshiyi.github.io/search/placeholder/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Posts Archive</title>
-      <link>https://Zhaoshiyi.com/archive/</link>
+      <link>https://shunsongshiyi.github.io/archive/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://Zhaoshiyi.com/archive/</guid>
+      <guid>https://shunsongshiyi.github.io/archive/</guid>
       <description></description>
     </item>
     
